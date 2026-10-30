@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Find the Words - Level 3</title>
+<style>
+:root{--bg:#eaf6ff;--card:#fff;--ink:#1f3347;--acc:#e0568a;--soft:#fff3d6;--line:#bcd6ea;--ok:#2e9e5b;--bad:#d64545;--sel:#ffd54a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14222e;--card:#1e3345;--ink:#eaf3fa;--acc:#f07aa6;--soft:#3a3320;--line:#3b5870}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS",Verdana,sans-serif;padding:12px}
+.wrap{max-width:900px;margin:auto}
+.top{display:flex;gap:10px;flex-wrap:wrap}
+.top input{flex:1;min-width:110px;border:0;border-bottom:2px solid var(--ink);background:transparent;color:var(--ink);font-size:16px;padding:6px}
+h1{text-align:center;color:var(--acc);margin:10px 0;font-size:clamp(28px,6vw,46px)}
+.bar{background:var(--acc);color:#fff;border-radius:14px;padding:10px 16px;font-weight:bold;font-size:18px}
+.hint{font-style:italic;margin:8px 4px}
+.words{background:var(--soft);border:3px dashed #e5b84a;border-radius:16px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.words span{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:6px 14px;font-weight:bold;font-size:18px;cursor:pointer}
+.card{background:var(--card);border:3px solid var(--line);border-radius:20px;padding:12px;text-align:center;transition:transform .15s}
+.big{font-size:100px;line-height:1.15;display:inline-block;cursor:pointer}
+.ok{background:var(--ok)!important;color:#fff!important;border-color:var(--ok)!important;animation:pop .5s}
+.bad{background:var(--bad)!important;color:#fff!important;border-color:var(--bad)!important;animation:shake .45s}
+@keyframes pop{50%{transform:scale(1.2)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin:14px 0}
+.score{border:3px solid var(--ink);padding:8px 18px;font-weight:bold;font-size:22px;border-radius:8px}
+button.act{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:12px 22px;font-size:18px;font-weight:bold;cursor:pointer;font-family:inherit;margin:2px}
+.credit{text-align:center;margin:18px 0;opacity:.8}
+#win{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20}
+#win div{background:var(--card);border-radius:24px;padding:30px;text-align:center;max-width:90%;animation:pop .6s}
+#win h2{font-size:34px;margin:0 0 8px;color:var(--acc)}
+.fall{position:fixed;top:-50px;font-size:34px;animation:fall 3s linear forwards;z-index:30;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+</style></head><body><div class="wrap">
+<div class="top"><label>Name: <input></label><label>Class: <input></label><label>Date: <input></label></div>
+<h1>🐪 Find the Words 🐪</h1>
+<div class="bar">⭐ Level 3: Write 3 sentences about the following.</div>
+<p class="hint">Write a full sentence on each line. Start with a capital letter, end with a full stop, then press Check.</p>
+<div id="bx" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px"></div><div id="fb" style="font-size:20px;font-weight:bold;margin:8px 0;text-align:center"></div>
+<div class="foot"><div class="score">Level 3: <span id="sc">0</span> / 6</div><div><button class="act" onclick="check()">✅ Check</button><button class="act" onclick="ex()" style="background:#3d8bd6">💡 Examples</button><button class="act" id="rs">🔄 Try again</button></div></div>
+<div class="credit">Created by T.Badria Alfalahi</div></div>
+<div id="win"><div><div style="font-size:90px">🏆</div><h2>Well done!</h2><p style="font-size:22px">You scored <b id="fs"></b> / 6</p><button class="act" id="cl2">Close</button></div></div>
+<script>
+let ac;
+function snd(f,d,t,v){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t||"sine";o.frequency.value=f;g.gain.value=v||.15;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+function good(){snd(523,.15);setTimeout(()=>snd(659,.15),120);setTimeout(()=>snd(784,.3),240)}
+function bad(){snd(180,.35,"sawtooth",.12)}
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+function rain(l){l.forEach((e,i)=>setTimeout(()=>{const s=document.createElement("div");s.className="fall";s.textContent=e;s.style.left=Math.random()*95+"vw";document.body.appendChild(s);setTimeout(()=>s.remove(),3100)},i*90))}
+function celebrate(n){fs.textContent=n;win.style.display="flex";rain(["🎉","⭐","🎈","✨","🏆","🐪","🎊","🌟","🎉","⭐","🎈","✨","🎊","🌟","🏆","🐪"]);good()}
+document.getElementById("cl2").onclick=()=>win.style.display="none";
+document.getElementById("rs").onclick=()=>build();
+
+const T=[{e:"🐪",t:"camel / hump",k:["camel","hump"],ex:["A camel has a big hump.","The hump is on its back.","A camel can live in the desert."]},{e:"🐦",t:"bird / beak",k:["bird","beak"],ex:["A bird has a small beak.","It uses its beak to eat seeds.","The beak is hard and sharp."]}];
+let score=0;
+function build(){score=0;sc.textContent=0;fb.textContent="";win.style.display="none";bx.innerHTML="";
+ T.forEach((x,i)=>{const c=document.createElement("div");c.className="card";c.style.textAlign="left";
+  c.innerHTML=`<div style="text-align:center"><span class="big" onclick="say('${x.t.replace("/","")}')">${x.e}</span><div style="display:inline-block;background:var(--soft);border-radius:20px;padding:6px 18px;font-weight:bold;font-size:22px;margin-left:8px">${x.t}</div></div>`+[1,2,3].map(n=>`<div style="margin-top:10px;font-size:18px">${n}. <button class="act sp" style="padding:4px 10px;font-size:14px">🔊</button><input class="ln" data-i="${i}" placeholder="Write a sentence..." style="width:100%;margin-top:4px;font-size:18px;padding:8px;border:3px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"></div>`).join("");
+  c.querySelectorAll(".sp").forEach((s,n)=>s.onclick=()=>{const v=c.querySelectorAll(".ln")[n].value;if(v)say(v)});
+  bx.appendChild(c)})}
+function check(){let s=0,msg=[];
+ document.querySelectorAll(".ln").forEach((el,n)=>{const v=el.value.trim(),k=T[+el.dataset.i].k;el.classList.remove("ok","bad");let p="";
+  if(!v)p="empty";else if(!/^[A-Z]/.test(v))p="start with a capital letter";else if(!/[.!?]$/.test(v))p="end with a full stop";else if(v.split(/\s+/).length<4)p="write at least 4 words";else if(!k.some(w=>v.toLowerCase().includes(w)))p="use the words: "+k.join(" or ");
+  if(p){el.classList.add("bad");if(p!="empty")msg.push((n%3+1)+" ("+(+el.dataset.i?"bird":"camel")+"): "+p)}else{el.classList.add("ok");s++}});
+ sc.textContent=s;fb.textContent=msg.join(" | ");if(s==6){good();setTimeout(()=>celebrate(6),600)}else{s>=4?good():bad()}}
+function ex(){document.querySelectorAll(".ln").forEach((el,n)=>{el.value=T[+el.dataset.i].ex[n%3]});say("Here are some examples.")}
+build();</script></body></html>
